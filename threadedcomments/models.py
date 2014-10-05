@@ -3,11 +3,16 @@ from django.contrib.comments.models import Comment
 from django.contrib.comments.managers import CommentManager
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from qhonuskan_votes.models import VotesField, ObjectsWithScoresManager, SortByScoresManager
 
 PATH_SEPARATOR = getattr(settings, 'COMMENT_PATH_SEPARATOR', '/')
 PATH_DIGITS = getattr(settings, 'COMMENT_PATH_DIGITS', 10)
 
 class ThreadedComment(Comment):
+    votes = VotesField()
+    objects = models.Manager()
+    objects_with_scores = ObjectsWithScoresManager()
+    order_with_scores = SortByScoresManager()
     title = models.TextField(_('Title'), blank=True)
     parent = models.ForeignKey('self', null=True, blank=True, default=None, related_name='children', verbose_name=_('Parent'))
     last_child = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL, verbose_name=_('Last child'))
